@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: your-app-name
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn floorgen.wsgi:application" 
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.16
+    plan: starter # Choose an appropriate plan with enough memory
