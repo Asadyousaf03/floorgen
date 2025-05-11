@@ -25,9 +25,9 @@ SECRET_KEY = "django-insecure-%77r#r7m7to36@z%6p%0d-kf)@0po#!9o+p6^$(2*dy28m8$&5
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #1.
-DEBUG = False
+DEBUG = True
 #2.
-ALLOWED_HOSTS = ['floorgen.onrender.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -60,7 +60,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = "floorgen.urls"
@@ -129,16 +128,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# STATIC_URL = "static/"
-# STATICFILES_DIR = [os.path.join, (BASE_DIR, 'static')]
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # collectstatic will copy all static files here
+STATIC_URL = "static/"
+STATICFILES_DIR = [os.path.join, (BASE_DIR, 'static')]
+  # collectstatic will copy all static files here
 
 # If you have a global /static/ folder (optional)
 
 # Use WhiteNoise for serving static files on Render
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

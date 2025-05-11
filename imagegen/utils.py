@@ -112,66 +112,7 @@ class ArchitecturalDrawing:
 
             self.draw_text_with_outline(label, (cx - 40, cy - 10), font_scale, (0, 0, 0))
             self.draw_text_with_outline(area, (cx - 35, cy + 15), font_scale * 0.8, (100, 100, 100))
-    # def draw_dimension_line(self, start: tuple, end: tuple, 
-    #                       offset: int = 40, color: tuple = (0, 0, 0)):
-    #     """Draw an architectural dimension line with arrows and measurement"""
-    #     # Calculate angle and length
-    #     dx = end[0] - start[0]
-    #     dy = end[1] - start[1]
-    #     angle = np.arctan2(dy, dx)
-        
-    #     length_pixels = np.sqrt(dx**2 + dy**2)
-        
-    #     # Calculate offset points
-    #     offset_vector = np.array([-np.sin(angle), np.cos(angle)]) * offset
-    #     start_offset = (int(start[0] + offset_vector[0]), int(start[1] + offset_vector[1]))
-    #     end_offset = (int(end[0] + offset_vector[0]), int(end[1] + offset_vector[1]))
-        
-    #     # Draw dimension line
-    #     cv2.line(self.image, start_offset, end_offset, color, 1)
-        
-    #     # Draw extension lines
-    #     cv2.line(self.image, start, start_offset, color, 1)
-    #     cv2.line(self.image, end, end_offset, color, 1)
-        
-    #     # Add measurement text
-    #     text = self.dims.pixels_to_architectural(length_pixels)
-    #     text_pos = ((start_offset[0] + end_offset[0]) // 2, 
-    #                (start_offset[1] + end_offset[1]) // 2)
-        
-    #     # Rotate text if line is vertical
-    #     if abs(dx) < abs(dy):
-    #         # Vertical dimension
-    #         cv2.putText(self.image, text, 
-    #                    (text_pos[0] - 30, text_pos[1]),
-    #                    cv2.FONT_HERSHEY_SIMPLEX, 0.2, color, 1)
-    #     else:
-    #         # Horizontal dimension
-    #         cv2.putText(self.image, text,
-    #                    (text_pos[0] - 20, text_pos[1] - 5),
-    #                    cv2.FONT_HERSHEY_SIMPLEX, 0.2, color, 1)
-    
-    
-    
-
-    # def draw_room_label(self, polygon, label: str, area: str):
-    #     """Draw room label and area in the center of the room"""
-    #     # Calculate centroid
-    #     moments = cv2.moments(np.array(polygon))
-    #     if moments['m00'] != 0:
-    #         cx = int(moments['m10'] / moments['m00'])
-    #         cy = int(moments['m01'] / moments['m00'])
-            
-    #         # Draw room name
-    #         cv2.putText(self.image, label,
-    #                    (cx - 20, cy - 5),  # Adjusted position for smaller labels
-    #                    cv2.FONT_HERSHEY_SIMPLEX, 0.2, (0, 0, 0), 1)  # Smaller font size and same thickness
-            
-    #         cv2.putText(self.image, area,
-    #                    (cx - 15, cy + 5),  # Adjusted position for smaller area text
-    #                    cv2.FONT_HERSHEY_SIMPLEX, 0.2, (100, 100, 100), 1)  # Smaller font size and same thickness
-    
-        
+     
     
     
 
@@ -209,48 +150,7 @@ def calculate_polygon_area(polygon, pixels_per_foot=12, label=None):
     area_feet = area_pixels / (pixels_per_foot ** 2)
     return round(area_feet, 2)
 
-# def extract_polygons(image, color_map, tolerance=0, epsilon_factor=0.0, filter_image=False):
-#     """Extract polygons based on color matching."""
-#     polygons = []  # Store all polygons with their labels
-#     mask_visual = np.zeros_like(image[:, :, 0])  # Initialize a blank mask for visualization
-    
-#     # Apply bilateral filter if specified
-#     if filter_image:
-#         image = cv2.bilateralFilter(image, 9, 4, 3)
 
-#     for color, label in color_map.items():
-#         lower_bound = np.array([max(0, c - tolerance) for c in color], dtype=np.uint8)
-#         upper_bound = np.array([min(255, c + tolerance) for c in color], dtype=np.uint8)
-
-#         # Create a mask for the current color
-#         mask = cv2.inRange(image, lower_bound, upper_bound)
-        
-
-#         # Find contours in the mask
-#         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-#         for contour in contours:
-#             epsilon = epsilon_factor * cv2.arcLength(contour, True)
-#             approx = cv2.approxPolyDP(contour, epsilon, True)
-#             polygon = [(int(point[0][0]), int(point[0][1])) for point in approx]
-
-#             # Calculate edge lengths
-#             edges = calculate_edge_lengths(polygon)
-            
-#             # Calculate area
-#             area_sqft = calculate_polygon_area(polygon, pixels_per_foot=12, label=label)
-            
-#             polygons.append({
-#                 "label": label,
-#                 "polygon": polygon,
-#                 "edges": edges,          # Add edge lengths
-#                 "area_sqft": area_sqft    # Add area in square feet
-#             })
-
-
-#             # Draw the polygon on the visualization mask
-#             cv2.fillPoly(mask_visual, [np.array(polygon, dtype=np.int32).reshape((-1, 1, 2))], (255,))
-
-#     return polygons
 
 def extract_polygons(image, color_map, tolerance=0, epsilon_factor=0.0, filter_image=False):
     """Extract polygons based on color matching."""
@@ -354,85 +254,7 @@ def visualize_floor_plan(json_data: Dict, output_path: str):
     cv2.imwrite(output_path, drawing.image)
     return output_path
 
-# def visualize_floor_plan(json_data: Dict, output_path: str):
-#     dims = ArchitecturalDimensions(pixels_per_foot=12)  
-#     drawing = ArchitecturalDrawing(1024, 1024, dims)
-    
-#     # Draw walls with dimensions
-#     # for wall in json_data['walls']:
-#     #     for edge in wall['edges']:
-#     #         x1, y1 = map(int, edge['start'])
-#     #         x2, y2 = map(int, edge['end'])
-#     #         drawing.draw_wall((x1, y1), (x2, y2), thickness=6)
-            
-#     #         # Add dimension lines for edges longer than 35 pixels
-#     #         if edge['length'] > 35:
-#     #             drawing.draw_arrowed_dimension_line((x1, y1), (x2, y2))
-#     for wall in json_data['walls']:
-#         for edge in wall['edges']:
-#             start = tuple(map(int, edge['start']))
-#             end = tuple(map(int, edge['end']))
-#             drawing.draw_wall(start, end, thickness=6)
-#             if edge['length'] > 35:  # Only label if big enough
-#                 drawing.draw_arrowed_dimension_line(start, end)
-    
-#     # Draw areas with labels
-#     # for area in json_data['areas']:
-#     #     fill_color = (240, 240, 240)
-#     #     if area['label'] == 'Inner walls':
-#     #         fill_color = (200, 200, 200)
-#     #         cv2.polylines(drawing.image, [np.array(area['polygon'], dtype=np.int32)], 
-#     #                       True, (0,0,0), 2)
-        
-#     #     cv2.fillPoly(drawing.image, [np.array(area['polygon'], dtype=np.int32)], fill_color)
-        
-#     #     if area['label'] not in ['Inner walls', 'Main gate']:
-#     #         area_value, area_text = dims.calculate_area(area['polygon'])
-#     #         drawing.draw_room_label(area['polygon'], area['label'], area_text)
-#     for area in json_data['areas']:
-#         label = area['label']
-#         polygon = np.array(area['polygon'], dtype=np.int32)
-
-#         if label == 'Inner walls':
-#             fill_color = (200, 200, 200)
-#             cv2.polylines(drawing.image, [polygon], isClosed=True, color=(0, 0, 0), thickness=2)#changed
-#         else:
-#             fill_color = (230, 230, 255)  # Light color for other rooms
-
-#         cv2.fillPoly(drawing.image, [polygon], fill_color)
-
-#         if label not in ['Inner walls', 'Main gate']:
-#             area_value, area_text = dims.calculate_area(area['polygon'])
-#             drawing.draw_room_label(area['polygon'], label, area_text)
-
-    
-    
-#     # Add scale bar
-#         scale_length_pixels = int(dims.pixels_per_foot * 12)  
-#         scale_bar_start = (100, 950)
-#         scale_bar_end = (100 + scale_length_pixels, 950)
-#         cv2.line(drawing.image, scale_bar_start, scale_bar_end, (0, 0, 0), 3)
-#         drawing.draw_text_with_outline("12pix = 1'", (scale_bar_start[0] + scale_length_pixels // 2 - 10, scale_bar_start[1] - 10), 0.7, (0, 0, 0))
-        
-#     # Ensure directory exists
-#     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-#     cv2.imwrite(output_path, drawing.image)
-#     return output_path
-
 # 'process_floor_plan' takes image and return json file 
-def remove_background(image):
-    # Convert to RGBA if not already
-    if image.shape[2] == 3:
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
-    
-    # Create a simple mask using threshold
-    gray = cv2.cvtColor(image[:,:,:3], cv2.COLOR_RGB2GRAY)
-    _, mask = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
-    
-    # Apply mask to alpha channel
-    image[:, :, 3] = mask
-    
-    return image
 def process_floor_plan(image_path, wall_color_map, area_color_map, format, tolerance=23):
     """Process floor plan and extract geometric data."""
     # Load the image
@@ -466,8 +288,8 @@ def process_floor_plan(image_path, wall_color_map, area_color_map, format, toler
     resized_image = input_image.resize(target_size, resample=Resampling.LANCZOS)
     
     # Remove background from the resized image
-    # background_removed = remove(resized_image)
-    background_removed = remove_background(resized_image)
+    background_removed = remove(resized_image)
+
     # Generate filename for the no-background image
     filename_base = os.path.splitext(os.path.basename(image_path))[0]
     output_path = os.path.join(output_dir, f"{filename_base}_no_bg.png")

@@ -63,7 +63,7 @@ def gallery(request):
     return render(request, 'imagegen/gallery.html', {"floorplans": floorplans})
 
             
-GRADIO_API_URL = "https://d6643dbd30efae408f.gradio.live"
+GRADIO_API_URL = "https://df7b3f0f00a71bb20b.gradio.live"
 
 # Initialize Gradio Client
 client = Client(GRADIO_API_URL)
