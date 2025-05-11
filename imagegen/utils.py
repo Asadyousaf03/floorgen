@@ -420,6 +420,19 @@ def visualize_floor_plan(json_data: Dict, output_path: str):
 #     return output_path
 
 # 'process_floor_plan' takes image and return json file 
+def remove_background(image):
+    # Convert to RGBA if not already
+    if image.shape[2] == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
+    
+    # Create a simple mask using threshold
+    gray = cv2.cvtColor(image[:,:,:3], cv2.COLOR_RGB2GRAY)
+    _, mask = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
+    
+    # Apply mask to alpha channel
+    image[:, :, 3] = mask
+    
+    return image
 def process_floor_plan(image_path, wall_color_map, area_color_map, format, tolerance=23):
     """Process floor plan and extract geometric data."""
     # Load the image
@@ -453,8 +466,8 @@ def process_floor_plan(image_path, wall_color_map, area_color_map, format, toler
     resized_image = input_image.resize(target_size, resample=Resampling.LANCZOS)
     
     # Remove background from the resized image
-    background_removed = remove(resized_image)
-
+    # background_removed = remove(resized_image)
+    background_removed = remove_background(resized_image)
     # Generate filename for the no-background image
     filename_base = os.path.splitext(os.path.basename(image_path))[0]
     output_path = os.path.join(output_dir, f"{filename_base}_no_bg.png")
